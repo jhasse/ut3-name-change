@@ -17,9 +17,6 @@ public:
 
 int main() {
 	PauseAtExit _;
-	std::cout << "Enter your Unreal Tournament 3 multiplayer name: " << std::flush;
-	std::string name;
-	std::cin >> name;
 
 	std::vector<char> my_documents(MAX_PATH);
 	HRESULT result = SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, &my_documents[0]);
@@ -28,6 +25,15 @@ int main() {
 		return EXIT_FAILURE;
 	}
 
+	const std::string saveDataPath = "\\My Games\\Unreal Tournament 3\\UTGame\\SaveData\\";
+	if (!std::ifstream(std::string(&my_documents[0]) + saveDataPath + "Player.ue3profile")) {
+		std::cout << "Please install and start Unreal Tournament 3 first!" << std::endl;
+		return EXIT_FAILURE;
+	}
+
+	std::cout << "Enter your Unreal Tournament 3 multiplayer name: " << std::flush;
+	std::string name;
+	std::cin >> name;
 	std::stringstream sstream;
 	sstream << &my_documents[0] << "\\My Games\\Unreal Tournament 3\\UTGame\\Config\\UTGame.ini";
 	auto iniName = sstream.str();
@@ -67,11 +73,12 @@ int main() {
 
 	std::stringstream cmd;
 	cmd << "copy \""
-		<< &my_documents[0] << "\\My Games\\Unreal Tournament 3\\UTGame\\SaveData\\.ue3profile\" \""
-	    << &my_documents[0] << "\\My Games\\Unreal Tournament 3\\UTGame\\SaveData\\" << name << ".ue3profile\"";
+	    << &my_documents[0] << saveDataPath << "Player.ue3profile\" \""
+	    << &my_documents[0] << saveDataPath << name << ".ue3profile\"";
 	std::cout << std::endl << cmd.str() << std::endl << std::endl;
 	if (system(cmd.str().c_str())) {
 		std::cout << "Error: Copying profile file failed." << std::endl;
+	} else {
+		std::cout << "\nSuccess!" << std::endl;
 	}
-	std::cout << "\nSuccess!" << std::endl;
 }
