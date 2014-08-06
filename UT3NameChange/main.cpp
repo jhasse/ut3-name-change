@@ -33,7 +33,14 @@ int main() {
 
 	std::cout << "Enter your Unreal Tournament 3 multiplayer name: " << std::flush;
 	std::string name;
-	std::cin >> name;
+	while (true) {
+		std::cin >> name;
+		auto pos = name.find('-');
+		if (pos == std::string::npos) {
+			break;
+		}
+		std::cout << "No hyphens allowed! Try again: " << std::flush;
+	}
 	std::stringstream sstream;
 	sstream << &my_documents[0] << "\\My Games\\Unreal Tournament 3\\UTGame\\Config\\UTGame.ini";
 	auto iniName = sstream.str();
